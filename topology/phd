@@ -1,0 +1,28 @@
+class PHD(embeddings):
+
+    def __init__(self, embddings):
+        self.embeddings = embeddings
+        
+    def compute_persistence_diagrams(self.embeddings):
+       start_time = time.time()
+       diagrams = []
+       for i, embedding in enumerate(tqdm(self.embeddings)):
+           print(f"Computing persistence diagram for embedding {i+1}/{len(embeddings)}...")
+           # Turn the embedding into a point cloud
+           point_cloud = embedding # Reshape for simplicity, change depending on your actual data
+    
+           # Create Rips complex and compute persistence
+           rips_complex = g.RipsComplex(points=point_cloud)
+           simplex_tree = rips_complex.create_simplex_tree(max_dimension=2)
+           diag = simplex_tree.persistence()
+           diagrams.append(diag)
+       print(f"Computation time: {time.time() - start_time:.3f} seconds")
+       return diagrams
+    
+      persistence_diagrams = compute_persistence_diagrams(df['embedding_reshaped'].tolist())
+      
+      filtered_data = [list(pair[1]) for pair in persistence_diagrams[0] if pair[0] == 1]
+      lifetimes = []
+      for el in filtered_data:
+          lifetimes.append(el[1]-el[0])
+      return lifetimes
